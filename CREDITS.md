@@ -10,6 +10,7 @@ Control Room is its own codebase. Nothing here is a fork. This file lists every 
 | [Tokyo Night](https://github.com/folke/tokyonight.nvim) (palette, via Omarchy) | Apache-2.0 | Colour palette | `defaults/themes/tokyo-night` |
 | [Catppuccin](https://github.com/catppuccin/catppuccin) (palette, via Omarchy) | MIT | Colour palette | `defaults/themes/catppuccin` |
 | [Rosé Pine](https://github.com/rose-pine/rose-pine-theme) (palette, via Omarchy) | MIT | Colour palette | `defaults/themes/rose-pine` |
+| [electron-liquid-glass](https://github.com/Meridius-Labs/electron-liquid-glass), © Meridius Labs | MIT | Native Apple Liquid Glass (NSGlassEffectView) for the window chrome, via `liquidGlass.addView` on launch. On by default; `theme.json`'s `"glass": false` opts out (needs restart). Private macOS APIs with a public NSVisualEffectView fallback. No code copied. | `apps/desktop/src/main/index.ts`, `apps/desktop/src/main/config.ts`, `defaults/theme.json` |
 | [Ferdium](https://github.com/ferdium/ferdium-app) | Apache-2.0 | The idea of giving every embedded website its own saved login and keeping it alive in the background, with a normal Chrome user agent so sites treat it like a browser. No code copied. | `modules/web-electron` |
 
 ## Libraries used

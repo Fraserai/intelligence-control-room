@@ -303,7 +303,7 @@ try {
 
   await clickMenu(app, "Home");
   await page.waitForFunction(() => document.querySelector("h1")?.textContent === "Control Room", null, { timeout: 5000 }).catch(() => {});
-  const homeShown = await page.evaluate(() => document.querySelector("h1")?.textContent === "Control Room");
+  const homeShown = await page.evaluate(() => !!document.querySelector("[data-testid=home]"));
   const allAlive = await page.evaluate(() =>
     [...document.querySelectorAll("[data-testid=live-dot]")].map((e) => e.dataset.state),
   );

@@ -106,6 +106,11 @@ export class ConfigService extends EventEmitter {
     return this.good.modules ?? { theme: "theme-colors-toml", webSpaces: "web-electron" };
   }
 
+  /** Liquid Glass for the window chrome. Applied at launch only (see ThemeConfigSchema). */
+  getGlass(): boolean {
+    return this.good.theme?.glass ?? true;
+  }
+
   async start(): Promise<void> {
     await ensureDefaults(this.defaultsDir, this.configDir);
     await this.reload();
@@ -164,7 +169,7 @@ export class ConfigService extends EventEmitter {
         configDir: this.defaultsDir,
         log: this.log,
       });
-      resolvedTheme = await themeApi.load("control-room");
+      resolvedTheme = await themeApi.load("rose-pine");
     }
 
     this.state = { configDir: dir, theme: resolvedTheme, themes, spaces, errors };

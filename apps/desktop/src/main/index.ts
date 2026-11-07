@@ -7,6 +7,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { app, BrowserWindow, ipcMain, Menu, nativeTheme, shell } from "electron";
+import liquidGlass from "electron-liquid-glass";
 import type { AppState, Logger, Rect, Space, WebNavAction, WebSpaceHostApi, WebSpaceStatus } from "@control-room/contracts";
 import { ConfigService, resolveConfigDir } from "./config";
 import { activateWebModule } from "./registry";
@@ -96,6 +97,10 @@ function applyTheme(state: AppState): void {
 }
 
 function createWindow(): void {
+  // Liquid Glass can't sit alongside vibrancy (it would override and look
+  // blurry) — glass gets a transparent window, everyone else keeps the classic
+  // vibrancy sidebar. theme.json's "glass" flag chooses; fixed at launch.
+  const glass = config.getGlass();
   win = new BrowserWindow({
     width: 1440,
     height: 920,
@@ -105,8 +110,9 @@ function createWindow(): void {
     title: "Control Room",
     titleBarStyle: "hiddenInset",
     trafficLightPosition: { x: 18, y: 18 },
-    vibrancy: "sidebar",
-    visualEffectState: "active",
+    ...(glass
+      ? { transparent: true }
+      : { vibrancy: "sidebar" as const, visualEffectState: "active" as const }),
     backgroundColor: "#00000000",
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
@@ -115,6 +121,7 @@ function createWindow(): void {
       nodeIntegration: false,
     },
   });
+  if (glass) win.setWindowButtonVisibility(true);
 
   // The app UI never opens windows or navigates away; links go to the normal browser.
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -123,6 +130,15 @@ function createWindow(): void {
   });
   win.webContents.on("will-navigate", (event) => event.preventDefault());
   win.once("ready-to-show", () => win?.show());
+
+  if (glass) {
+    // Behind the web content, not over it. -1 = not supported here.
+    const target = win;
+    target.webContents.once("did-finish-load", () => {
+      const id = liquidGlass.addView(target.getNativeWindowHandle(), { cornerRadius: 12 });
+      log.info(id === -1 ? "liquid glass: not supported (staying classic)" : `liquid glass: view ${id}`);
+    });
+  }
 
   web?.attach(win);
 

@@ -32,16 +32,16 @@
 
 :root {
   /* Fallbacks until the first theme arrives (same as the default theme). */
-  --cr-bg: #0d0c14;
-  --cr-bg-dark: #09080f;
-  --cr-bg-lighter: #16141f;
-  --cr-fg: #d7d5e4;
-  --cr-fg-dim: #75728c;
-  --cr-accent: #8b7cff;
-  color-scheme: dark;
-}
-:root[data-mode="light"] {
+  --cr-bg: #faf4ed;
+  --cr-bg-dark: #ede7e1;
+  --cr-bg-lighter: #f2e9e1;
+  --cr-fg: #575279;
+  --cr-fg-dim: #9893a5;
+  --cr-accent: #56949f;
   color-scheme: light;
+}
+:root[data-mode="dark"] {
+  color-scheme: dark;
 }
 
 html,

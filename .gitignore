@@ -7,3 +7,5 @@ dist/
 .env.*
 # verification screenshots are regenerated on every run
 scripts/screenshots/
+# local preview images
+.preview/

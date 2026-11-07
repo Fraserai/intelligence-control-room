@@ -48,7 +48,7 @@ try {
   const files = (await readdir(configDir)).sort().join(",");
   const themes = (await readdir(join(configDir, "themes"))).sort().join(",");
   check("default config files created", files === "modules.json,spaces.json,theme.json,themes", files);
-  check("starter themes copied", themes === "catppuccin,control-room,rose-pine,tokyo-night", themes);
+  check("starter themes copied", themes === "catppuccin,rose-pine,tokyo-night", themes);
 
   // 2. sidebar content
   const spaces = JSON.parse(await readFile(join(configDir, "spaces.json"), "utf8"));
@@ -64,7 +64,7 @@ try {
 
   const themeOf = () => page.evaluate(() => document.documentElement.dataset.theme);
   const bgOf = () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--cr-bg").trim());
-  check("default theme is control-room", (await themeOf()) === "control-room", await bgOf());
+  check("default theme is light rose-pine", (await themeOf()) === "rose-pine", await bgOf());
 
   // 3. live theme switch
   await writeFile(join(configDir, "theme.json"), JSON.stringify({ current: "tokyo-night" }, null, 2));
@@ -96,8 +96,8 @@ try {
   await page.waitForSelector("[data-space=test-site]", { timeout: 5000 });
   check("editing spaces.json updates the sidebar live", true);
 
-  await writeFile(join(configDir, "theme.json"), JSON.stringify({ current: "control-room" }, null, 2));
-  await page.waitForFunction(() => document.documentElement.dataset.theme === "control-room", null, { timeout: 5000 });
+  await writeFile(join(configDir, "theme.json"), JSON.stringify({ current: "rose-pine" }, null, 2));
+  await page.waitForFunction(() => document.documentElement.dataset.theme === "rose-pine", null, { timeout: 5000 });
 } catch (e) {
   check("run finished without crashing", false, e.message);
 } finally {

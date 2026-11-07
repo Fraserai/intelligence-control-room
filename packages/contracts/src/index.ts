@@ -150,9 +150,15 @@ export interface WebSpaceHostApi {
 // Config files (all live in the config folder and hot-reload)
 // ---------------------------------------------------------------------------
 
-/** theme.json */
+/**
+ * theme.json
+ * `glass`: Apple Liquid Glass for the window chrome (needs macOS 26+). On by
+ * default; set it to false for the classic vibrancy sidebar. Applied at launch only —
+ * the glass view can't be removed once added, so changing it needs a restart.
+ */
 export const ThemeConfigSchema = z.object({
   current: z.string().min(1),
+  glass: z.boolean().default(true),
 });
 export type ThemeConfig = z.infer<typeof ThemeConfigSchema>;
 

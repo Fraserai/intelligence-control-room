@@ -14,7 +14,7 @@ export function Sidebar(props: {
   return (
     <aside
       className="flex w-[260px] shrink-0 flex-col"
-      style={{ background: "color-mix(in oklab, var(--cr-bg-dark) 88%, transparent)" }}
+      style={{ background: "color-mix(in oklab, var(--cr-bg-dark) 42%, transparent)" }}
     >
       {/* Room for the macOS window buttons. */}
       <div className="drag h-[52px] shrink-0" />
