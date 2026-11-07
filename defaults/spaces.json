@@ -1,0 +1,41 @@
+{
+  "groups": [
+    {
+      "id": "llms",
+      "title": "LLMs",
+      "spaces": [
+        { "id": "chatgpt", "title": "ChatGPT", "kind": "web", "url": "https://chatgpt.com" },
+        { "id": "claude", "title": "Claude", "kind": "web", "url": "https://claude.ai" },
+        { "id": "grok", "title": "Grok", "kind": "web", "url": "https://grok.com" },
+        { "id": "gemini", "title": "Gemini", "kind": "web", "url": "https://gemini.google.com" },
+        { "id": "huggingchat", "title": "HuggingChat", "kind": "local-app" }
+      ]
+    },
+    {
+      "id": "coding-agents",
+      "title": "Coding agents",
+      "spaces": [
+        { "id": "claude-code", "title": "Claude Code", "kind": "coding-agent" },
+        { "id": "codex", "title": "Codex", "kind": "coding-agent" },
+        { "id": "opencode", "title": "OpenCode", "kind": "coding-agent" }
+      ]
+    },
+    {
+      "id": "providers",
+      "title": "Inference providers",
+      "spaces": [
+        { "id": "fireworks", "title": "Fireworks", "kind": "web", "url": "https://fireworks.ai" },
+        { "id": "baseten", "title": "Baseten", "kind": "web", "url": "https://www.baseten.co" },
+        { "id": "together", "title": "Together", "kind": "web", "url": "https://www.together.ai" }
+      ]
+    },
+    {
+      "id": "sites",
+      "title": "Sites I use daily",
+      "spaces": [
+        { "id": "artificial-analysis", "title": "Artificial Analysis", "kind": "web", "url": "https://artificialanalysis.ai" },
+        { "id": "hugging-face", "title": "Hugging Face", "kind": "web", "url": "https://huggingface.co" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "control-room",
+  "private": true,
+  "description": "Control Room (\"Omarchy for AI\", working name). See AGENTS.md.",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "modules/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @control-room/desktop",
+    "build": "npm run build -w @control-room/desktop",
+    "start": "npm run start -w @control-room/desktop",
+    "typecheck": "tsc -p packages/contracts && tsc -p modules/theme-colors-toml && npm run typecheck -w @control-room/desktop",
+    "check:modules": "node scripts/check-module-boundaries.mjs",
+    "verify:step1": "npm run build && node scripts/verify-step1.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "playwright-core": "1.65.0",
+    "typescript": "^5.9.0"
+  }
+}

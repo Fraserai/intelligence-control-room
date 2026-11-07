@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/*
+ * Every colour comes from the current theme's colors.toml, sent by the main
+ * process as --cr-* variables. Tailwind classes like bg-bg or text-fg-dim map
+ * onto them, so switching theme restyles the whole app.
+ */
+@theme inline {
+  --color-bg: var(--cr-bg);
+  --color-bg-dark: var(--cr-bg-dark);
+  --color-bg-darker: var(--cr-bg-darker);
+  --color-bg-lighter: var(--cr-bg-lighter);
+  --color-fg: var(--cr-fg);
+  --color-fg-dim: var(--cr-fg-dim);
+  --color-fg-light: var(--cr-fg-light);
+  --color-fg-bright: var(--cr-fg-bright);
+  --color-accent: var(--cr-accent);
+  --color-selection: var(--cr-selection);
+  --color-muted: var(--cr-muted);
+  --color-red: var(--cr-red);
+  --color-yellow: var(--cr-yellow);
+  --color-orange: var(--cr-orange);
+  --color-green: var(--cr-green);
+  --color-cyan: var(--cr-cyan);
+  --color-blue: var(--cr-blue);
+  --color-magenta: var(--cr-magenta);
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+:root {
+  /* Fallbacks until the first theme arrives (same as the default theme). */
+  --cr-bg: #0d0c14;
+  --cr-bg-dark: #09080f;
+  --cr-bg-lighter: #16141f;
+  --cr-fg: #d7d5e4;
+  --cr-fg-dim: #75728c;
+  --cr-accent: #8b7cff;
+  color-scheme: dark;
+}
+:root[data-mode="light"] {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  /* Transparent so the macOS frosted sidebar shows through. */
+  background: transparent;
+  color: var(--cr-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Areas you can drag the window by. */
+.drag {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Smooth colour change when the theme switches. */
+.theme-fade,
+.theme-fade * {
+  transition:
+    background-color 260ms ease,
+    border-color 260ms ease,
+    color 260ms ease;
+}
