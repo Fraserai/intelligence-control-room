@@ -4,23 +4,30 @@
  * modules.json in the config folder picks which module fills each slot.
  * Swapping a module = add it here and change one line in modules.json.
  */
-import type { ControlRoomModule, ModuleContext, ThemeApi } from "@control-room/contracts";
+import type { ControlRoomModule, ModuleContext, ThemeApi, WebSpaceHostApi } from "@control-room/contracts";
 import themeColorsToml from "@control-room/theme-colors-toml";
+import webElectron from "@control-room/web-electron";
 
 const themeModules: Record<string, ControlRoomModule<ThemeApi>> = {
   [themeColorsToml.manifest.id]: themeColorsToml,
 };
 
-export function availableThemeModules(): string[] {
-  return Object.keys(themeModules);
+const webModules: Record<string, ControlRoomModule<WebSpaceHostApi>> = {
+  [webElectron.manifest.id]: webElectron,
+};
+
+function pick<T>(slot: string, all: Record<string, ControlRoomModule<T>>, id: string): ControlRoomModule<T> {
+  const mod = all[id];
+  if (!mod) {
+    throw new Error(`modules.json asks for ${slot} module "${id}", but the app only has: ${Object.keys(all).join(", ")}`);
+  }
+  return mod;
 }
 
 export async function activateThemeModule(id: string, ctx: ModuleContext): Promise<ThemeApi> {
-  const mod = themeModules[id];
-  if (!mod) {
-    throw new Error(
-      `modules.json asks for theme module "${id}", but the app only has: ${availableThemeModules().join(", ")}`,
-    );
-  }
-  return mod.activate(ctx);
+  return pick("theme", themeModules, id).activate(ctx);
+}
+
+export async function activateWebModule(id: string, ctx: ModuleContext): Promise<WebSpaceHostApi> {
+  return pick("webSpaces", webModules, id).activate(ctx);
 }

@@ -101,6 +101,11 @@ export class ConfigService extends EventEmitter {
     return this.state;
   }
 
+  /** The current (last good) modules.json. */
+  getModules(): ModulesConfig {
+    return this.good.modules ?? { theme: "theme-colors-toml", webSpaces: "web-electron" };
+  }
+
   async start(): Promise<void> {
     await ensureDefaults(this.defaultsDir, this.configDir);
     await this.reload();

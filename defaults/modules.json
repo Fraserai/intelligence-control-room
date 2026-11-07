@@ -1,3 +1,4 @@
 {
-  "theme": "theme-colors-toml"
+  "theme": "theme-colors-toml",
+  "webSpaces": "web-electron"
 }

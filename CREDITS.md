@@ -10,6 +10,7 @@ Control Room is its own codebase. Nothing here is a fork. This file lists every 
 | [Tokyo Night](https://github.com/folke/tokyonight.nvim) (palette, via Omarchy) | Apache-2.0 | Colour palette | `defaults/themes/tokyo-night` |
 | [Catppuccin](https://github.com/catppuccin/catppuccin) (palette, via Omarchy) | MIT | Colour palette | `defaults/themes/catppuccin` |
 | [Rosé Pine](https://github.com/rose-pine/rose-pine-theme) (palette, via Omarchy) | MIT | Colour palette | `defaults/themes/rose-pine` |
+| [Ferdium](https://github.com/ferdium/ferdium-app) | Apache-2.0 | The idea of giving every embedded website its own saved login and keeping it alive in the background, with a normal Chrome user agent so sites treat it like a browser. No code copied. | `modules/web-electron` |
 
 ## Libraries used
 
@@ -21,6 +22,7 @@ Control Room is its own codebase. Nothing here is a fork. This file lists every 
 | [React](https://github.com/facebook/react) | MIT |
 | [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | MIT |
 | [Lucide](https://github.com/lucide-icons/lucide) | ISC |
+| [Motion](https://github.com/motiondivision/motion) (the sliding sidebar highlight, page fades, live dot and Home glow) | MIT |
 | [Geist and Geist Mono fonts](https://github.com/vercel/geist-font) (via Fontsource) | SIL OFL 1.1 |
 | [zod](https://github.com/colinhacks/zod) | MIT |
 | [smol-toml](https://github.com/squirrelchat/smol-toml) | BSD-3-Clause |

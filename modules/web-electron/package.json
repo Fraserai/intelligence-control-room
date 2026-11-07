@@ -1,0 +1,18 @@
+{
+  "name": "@control-room/web-electron",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Web-space module: runs each website (LLMs, providers, sites) in its own Electron WebContentsView with its own saved login.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@control-room/contracts": "*"
+  },
+  "peerDependencies": {
+    "electron": "*"
+  }
+}

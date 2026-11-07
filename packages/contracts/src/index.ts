@@ -104,6 +104,49 @@ export interface ThemeApi {
 }
 
 // ---------------------------------------------------------------------------
+// Web-space modules (LLM websites, inference providers, sites)
+// ---------------------------------------------------------------------------
+
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** Live status of one website running inside the app. */
+export interface WebSpaceStatus {
+  id: string;
+  url: string;
+  title: string;
+  loading: boolean;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  /** True once the site has been opened in this launch. It then stays loaded in the background. */
+  open: boolean;
+  /** The site's own favicon as a data: URL, once it has loaded. */
+  favicon?: string;
+  /** Set when the site itself could not be reached. */
+  error?: string;
+}
+
+export type WebNavAction = "back" | "forward" | "reload" | "home";
+
+export interface WebSpaceHostApi {
+  /** Give the host the native window to draw sites in (an Electron BrowserWindow). */
+  attach(nativeWindow: unknown): void;
+  /** Show one site in the given area. The site is created once and kept alive. */
+  show(space: Space, bounds: Rect): void;
+  /** Hide whichever site is showing. Nothing is closed, so logins and pages stay. */
+  hide(): void;
+  navigate(id: string, action: WebNavAction): void;
+  /** Background colour shown while a site is still loading. */
+  setBackground(color: string): void;
+  statuses(): WebSpaceStatus[];
+  onStatus(callback: (status: WebSpaceStatus) => void): () => void;
+}
+
+// ---------------------------------------------------------------------------
 // Config files (all live in the config folder and hot-reload)
 // ---------------------------------------------------------------------------
 
@@ -116,6 +159,7 @@ export type ThemeConfig = z.infer<typeof ThemeConfigSchema>;
 /** modules.json: which module fills each slot. */
 export const ModulesConfigSchema = z.object({
   theme: z.string().min(1),
+  webSpaces: z.string().min(1).default("web-electron"),
 });
 export type ModulesConfig = z.infer<typeof ModulesConfigSchema>;
 

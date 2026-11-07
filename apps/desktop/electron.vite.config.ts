@@ -5,7 +5,11 @@ import tailwindcss from "@tailwindcss/vite";
 
 // Our own workspace packages are TypeScript source, so they are bundled
 // into the app instead of being loaded from node_modules at runtime.
-const workspacePackages = ["@control-room/contracts", "@control-room/theme-colors-toml"];
+const workspacePackages = [
+  "@control-room/contracts",
+  "@control-room/theme-colors-toml",
+  "@control-room/web-electron",
+];
 
 export default defineConfig({
   main: {
