@@ -9,6 +9,7 @@ const workspacePackages = [
   "@control-room/contracts",
   "@control-room/theme-colors-toml",
   "@control-room/web-electron",
+  "@control-room/agents-cli",
 ];
 
 export default defineConfig({

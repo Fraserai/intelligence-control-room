@@ -103,7 +103,7 @@ export class ConfigService extends EventEmitter {
 
   /** The current (last good) modules.json. */
   getModules(): ModulesConfig {
-    return this.good.modules ?? { theme: "theme-colors-toml", webSpaces: "web-electron" };
+    return this.good.modules ?? ModulesConfigSchema.parse({ theme: "theme-colors-toml" });
   }
 
   /** Liquid Glass for the window chrome. Applied at launch only (see ThemeConfigSchema). */

@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Sidebar } from "./Sidebar";
 import { WebSpaceView } from "./WebSpaceView";
+import { TerminalView } from "./TerminalView";
 import { QUOTES, shuffledIndices } from "./quotes";
-import { findSelection, hairline, plannedStep, useAppState, useWebStatuses, type Selection } from "./state";
+import {
+  findSelection,
+  hairline,
+  plannedStep,
+  useAgentsRunning,
+  useAppState,
+  useWebStatuses,
+  type Selection,
+} from "./state";
 
 export function App() {
   const state = useAppState();
   const statuses = useWebStatuses();
+  const agentsRunning = useAgentsRunning();
   const [selected, setSelected] = useState<Selection>();
 
   // ⌘0–9 from the app menu.
@@ -18,10 +28,11 @@ export function App() {
 
   if (!state) return null;
   const isWeb = selected?.space.kind === "web" && !!selected.space.url;
+  const isAgent = selected?.space.kind === "coding-agent";
 
   return (
     <div className="theme-fade flex h-full">
-      <Sidebar state={state} statuses={statuses} selectedId={selected?.space.id} onSelect={setSelected} />
+      <Sidebar state={state} statuses={statuses} agentsRunning={agentsRunning} selectedId={selected?.space.id} onSelect={setSelected} />
       <main
         className="relative m-2 ml-0 flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl border shadow-2xl"
         style={{
@@ -33,6 +44,8 @@ export function App() {
       >
         {isWeb ? (
           <WebSpaceView key={selected!.space.id} {...selected!} status={statuses[selected!.space.id]} />
+        ) : isAgent ? (
+          <TerminalView key={selected!.space.id} {...selected!} palette={state.theme.palette} />
         ) : (
           <AnimatePresence mode="wait">
             <motion.div

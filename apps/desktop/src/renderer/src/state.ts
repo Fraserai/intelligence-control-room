@@ -52,10 +52,21 @@ export const fallbackLook = { icon: Globe, tint: "var(--cr-blue)" };
 
 /** Which build step (PLAN.md section 4) makes each kind of space work. */
 export function plannedStep(space: Space): string {
-  if (space.kind === "coding-agent") return "build step 3 (coding agents)";
   if (space.kind === "local-app") return "build step 7 (HuggingChat)";
   return "a later step";
 }
 
 /** Subtle hairline colour that works in light and dark themes. */
 export const hairline = "color-mix(in oklab, var(--cr-fg) 9%, transparent)";
+
+/** Which coding agents are running in a terminal right now. */
+export function useAgentsRunning(): Record<string, boolean> {
+  const [running, setRunning] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    void window.controlRoom.term
+      .sessions()
+      .then((list) => setRunning((prev) => ({ ...Object.fromEntries(list.map((s) => [s.id, s.running])), ...prev })));
+    return window.controlRoom.term.onSession((s) => setRunning((prev) => ({ ...prev, [s.id]: s.running })));
+  }, []);
+  return running;
+}

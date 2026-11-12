@@ -11,10 +11,12 @@
     "dev": "npm run dev -w @control-room/desktop",
     "build": "npm run build -w @control-room/desktop",
     "start": "npm run start -w @control-room/desktop",
-    "typecheck": "tsc -p packages/contracts && tsc -p modules/theme-colors-toml && tsc -p modules/web-electron && npm run typecheck -w @control-room/desktop",
+    "typecheck": "tsc -p packages/contracts && tsc -p modules/theme-colors-toml && tsc -p modules/web-electron && tsc -p modules/agents-cli && npm run typecheck -w @control-room/desktop",
     "check:modules": "node scripts/check-module-boundaries.mjs",
     "verify:step1": "npm run build && node scripts/verify-step1.mjs",
-    "verify:step2": "npm run build && node scripts/verify-step2.mjs"
+    "verify:step2": "npm run build && node scripts/verify-step2.mjs",
+    "postinstall": "node scripts/postinstall.mjs",
+    "verify:step3": "npm run build && node scripts/verify-step3.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

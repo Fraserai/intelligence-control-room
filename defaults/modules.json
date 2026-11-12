@@ -1,4 +1,9 @@
 {
   "theme": "theme-colors-toml",
-  "webSpaces": "web-electron"
+  "webSpaces": "web-electron",
+  "codingAgents": {
+    "claude-code": "agent-claude-code",
+    "codex": "agent-codex",
+    "opencode": "agent-opencode"
+  }
 }

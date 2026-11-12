@@ -6,11 +6,21 @@
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { app, BrowserWindow, ipcMain, Menu, nativeTheme, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeTheme, shell } from "electron";
 import liquidGlass from "electron-liquid-glass";
-import type { AppState, Logger, Rect, Space, WebNavAction, WebSpaceHostApi, WebSpaceStatus } from "@control-room/contracts";
+import type {
+  AppState,
+  CodingAgentApi,
+  Logger,
+  Rect,
+  Space,
+  WebNavAction,
+  WebSpaceHostApi,
+  WebSpaceStatus,
+} from "@control-room/contracts";
 import { ConfigService, resolveConfigDir } from "./config";
-import { activateWebModule } from "./registry";
+import { activateAgentModule, activateWebModule } from "./registry";
+import { TerminalHost } from "./terminals";
 
 app.setName("Control Room");
 // Checks on the running app use a throwaway data folder so real logins are never touched.
@@ -28,6 +38,7 @@ const config = new ConfigService(resolveConfigDir(), defaultsDir, log);
 
 let win: BrowserWindow | undefined;
 let web: WebSpaceHostApi | undefined;
+let terminals: TerminalHost | undefined;
 
 // ---------------------------------------------------------------------------
 // Favicons: remembered between launches so the sidebar shows real site icons.
@@ -174,6 +185,51 @@ ipcMain.on("web:nav", (_e, id: unknown, action: unknown) => {
   if (typeof id === "string" && NAV_ACTIONS.includes(action as WebNavAction)) web?.navigate(id, action as WebNavAction);
 });
 
+/** Send to the UI only while its window is alive (agents can still report while the app quits). */
+function sendToUi(channel: string, ...args: unknown[]): void {
+  if (win && !win.isDestroyed() && !win.webContents.isDestroyed()) win.webContents.send(channel, ...args);
+}
+
+// Coding agents in terminals ------------------------------------------------
+const isId = (id: unknown): id is string => typeof id === "string" && !!terminals?.has(id);
+
+ipcMain.handle("term:sessions", () => terminals?.sessions() ?? []);
+ipcMain.handle("term:attach", (_e, id: unknown) => (isId(id) ? terminals!.attach(id) : undefined));
+ipcMain.on("term:input", (_e, id: unknown, data: unknown) => {
+  if (isId(id) && typeof data === "string") terminals!.write(id, data);
+});
+ipcMain.on("term:resize", (_e, id: unknown, cols: unknown, rows: unknown) => {
+  const ok = (n: unknown) => Number.isInteger(n) && (n as number) > 0 && (n as number) < 2000;
+  if (isId(id) && ok(cols) && ok(rows)) terminals!.resize(id, cols as number, rows as number);
+});
+ipcMain.handle("term:restart", async (_e, id: unknown) => {
+  if (isId(id)) await terminals!.restart(id);
+});
+ipcMain.handle("term:pickFolder", async (_e, id: unknown) => {
+  if (!isId(id) || !win) return;
+  const title = findSpace(id)?.title ?? id;
+  const picked = await dialog.showOpenDialog(win, {
+    title: `Folder for ${title}`,
+    defaultPath: terminals!.folderOf(id),
+    properties: ["openDirectory", "createDirectory"],
+  });
+  if (picked.canceled || !picked.filePaths[0]) return;
+  const running = terminals!.sessions().find((s) => s.id === id)?.running;
+  if (running) {
+    const answer = await dialog.showMessageBox(win, {
+      type: "question",
+      buttons: ["Restart in new folder", "Cancel"],
+      defaultId: 0,
+      cancelId: 1,
+      message: `Restart ${title} in ${picked.filePaths[0]}?`,
+      detail: "The current session in this terminal will end.",
+    });
+    if (answer.response !== 0) return;
+  }
+  await terminals!.setFolder(id, picked.filePaths[0]);
+  await terminals!.restart(id);
+});
+
 config.on("state", (state: AppState) => {
   applyTheme(state);
   buildMenu();
@@ -190,13 +246,27 @@ app.whenReady().then(async () => {
     if (status.favicon) rememberFavicon(status.id, status.favicon);
     win?.webContents.send("web:status", { ...status, favicon: status.favicon ?? favicons[status.id] });
   });
+
+  const agents: Record<string, CodingAgentApi> = {};
+  for (const [spaceId, moduleId] of Object.entries(config.getModules().codingAgents)) {
+    try {
+      agents[spaceId] = await activateAgentModule(moduleId, { configDir: config.configDir, log });
+    } catch (e) {
+      log.error((e as Error).message);
+    }
+  }
+  terminals = new TerminalHost(agents, config.configDir, log);
+  await terminals.init();
+  terminals.on("data", (id: string, data: string) => sendToUi("term:data", id, data));
+  terminals.on("session", (session) => sendToUi("term:session", session));
+
   const state = config.getState();
   if (state) applyTheme(state);
   buildMenu();
 
   createWindow();
   if (process.env.CONTROL_ROOM_TEST) {
-    (globalThis as Record<string, unknown>).__controlRoomTest = { web, win, menu: Menu.getApplicationMenu() };
+    (globalThis as Record<string, unknown>).__controlRoomTest = { web, win, terminals, menu: Menu.getApplicationMenu() };
   }
 
   app.on("activate", () => {
@@ -208,4 +278,7 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
-app.on("before-quit", () => void config.stop());
+app.on("before-quit", () => {
+  terminals?.killAll();
+  void config.stop();
+});

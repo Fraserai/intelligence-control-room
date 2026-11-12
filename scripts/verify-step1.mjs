@@ -56,7 +56,7 @@ try {
   const shown = await page.$$eval("[data-space]", (els) => els.map((e) => e.getAttribute("data-space")));
   check("sidebar shows every space from spaces.json", JSON.stringify(shown) === JSON.stringify(expected), shown.join(" "));
 
-  await page.click("[data-space=claude-code]");
+  await page.click("[data-space=huggingchat]");
   await page.waitForTimeout(300);
   await page.screenshot({ path: join(shots, "2-space-selected.png") });
   const placeholder = await page.textContent("main");

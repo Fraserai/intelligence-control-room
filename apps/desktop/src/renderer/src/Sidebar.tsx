@@ -7,10 +7,12 @@ import type { Selection, Statuses } from "./state";
 export function Sidebar(props: {
   state: AppState;
   statuses: Statuses;
+  /** Coding agents currently running in a terminal. */
+  agentsRunning: Record<string, boolean>;
   selectedId?: string;
   onSelect: (s: Selection) => void;
 }) {
-  const { state, statuses, selectedId, onSelect } = props;
+  const { state, statuses, agentsRunning, selectedId, onSelect } = props;
   return (
     <aside
       className="flex w-[260px] shrink-0 flex-col"
@@ -70,6 +72,9 @@ export function Sidebar(props: {
                       <span className="truncate">{space.title}</span>
                       {space.kind === "web" && open && (
                         <LiveDot loading={!!status?.loading} error={!!status?.error} />
+                      )}
+                      {space.kind === "coding-agent" && agentsRunning[space.id] && (
+                        <LiveDot loading={false} error={false} />
                       )}
                     </button>
                   </li>

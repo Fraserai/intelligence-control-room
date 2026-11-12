@@ -1,0 +1,15 @@
+{
+  "name": "@control-room/agents-cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Coding-agent modules: Claude Code, Codex and OpenCode as their official CLIs. Each one is a separate module; the app runs them in its own terminal.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@control-room/contracts": "*"
+  }
+}

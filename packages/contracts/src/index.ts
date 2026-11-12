@@ -147,6 +147,41 @@ export interface WebSpaceHostApi {
 }
 
 // ---------------------------------------------------------------------------
+// Coding-agent modules (Claude Code, Codex, OpenCode as their official CLIs)
+// ---------------------------------------------------------------------------
+
+export interface CodingAgentInfo {
+  installed: boolean;
+  version?: string;
+  /** Full path of the CLI that will run. */
+  path?: string;
+  /** How to install it if it's missing. */
+  installHint: string;
+}
+
+/** What to run in the terminal. The app owns the terminal; the module only says what to start. */
+export interface CodingAgentLaunch {
+  file: string;
+  args: string[];
+}
+
+export interface CodingAgentApi {
+  /** Find the official CLI on this Mac, using the PATH from your login shell. */
+  detect(path: string): Promise<CodingAgentInfo>;
+  launch(info: CodingAgentInfo): CodingAgentLaunch;
+}
+
+/** One coding agent running in a terminal inside the app. */
+export interface TerminalSession {
+  /** The sidebar space id, e.g. "claude-code". */
+  id: string;
+  cwd: string;
+  running: boolean;
+  exitCode?: number;
+  agent: CodingAgentInfo;
+}
+
+// ---------------------------------------------------------------------------
 // Config files (all live in the config folder and hot-reload)
 // ---------------------------------------------------------------------------
 
@@ -166,6 +201,12 @@ export type ThemeConfig = z.infer<typeof ThemeConfigSchema>;
 export const ModulesConfigSchema = z.object({
   theme: z.string().min(1),
   webSpaces: z.string().min(1).default("web-electron"),
+  /** Sidebar space id -> coding-agent module that runs it. */
+  codingAgents: z.record(z.string(), z.string()).default({
+    "claude-code": "agent-claude-code",
+    codex: "agent-codex",
+    opencode: "agent-opencode",
+  }),
 });
 export type ModulesConfig = z.infer<typeof ModulesConfigSchema>;
 
